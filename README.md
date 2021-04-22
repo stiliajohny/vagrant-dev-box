@@ -17,7 +17,7 @@
   <h3 align="center">Vagrant Dev Box</h3>
 
   <p align="center">
-    Quick and easy development box build with Ansible and Vagrant
+    Quick and easy Development Box build with Ansible and Vagrant
     <br />
     <a href="./README.md"><strong>Explore the docs »</strong></a>
     <br />
