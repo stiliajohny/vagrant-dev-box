@@ -1,0 +1,19 @@
+---
+- hosts: all
+  gather_facts: True
+  vars_files:
+    - ./deploy-vars.yml
+
+  # tasks:
+  #   - name: Copy HOST/.ssh to VAGRANT/.ssh
+  #     copy:
+  #       src: "~/.ssh/"
+  #       dest: /home/vagrant/.ssh/
+
+  #   - name: List vagrant ssh folder
+  #     shell: "ls -l  /home/vagrant/.ssh/"
+  #     register: files
+
+  #   - name: Print out files in the /home/vagrant/.ssh folder
+  #     debug:
+  #       msg: "{{ files.stdout_lines }}"

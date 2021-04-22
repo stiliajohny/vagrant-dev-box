@@ -1,0 +1,16 @@
+---
+- hosts: all
+  gather_facts: True
+  vars_files:
+    - "./deploy-vars.yml"
+
+  roles:
+    - ansible-role-patching # mostly leave enabled as it does a cache update on ubuntu repos
+    - ansible-role-apps
+    - docker
+    - ansible-role-python
+    - ansible-role-asdf
+    - golang
+    - zsh
+    - ansible-role-server-banners-prompts
+    - ansible-role-code-server

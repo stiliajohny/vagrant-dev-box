@@ -1,0 +1,62 @@
+---
+- hosts: all
+  gather_facts: True
+  vars_files:
+    - ./deploy-vars.yml
+
+  tasks:
+    - set_fact: localhost_user="{{ lookup('env','USER') | default('ERROR', True) }}"
+
+    - name: Git Clone ASDF role
+      git:
+        repo: git@github.com:stiliajohny/ansible-role-asdf.git
+        dest: "./roles/ansible-role-asdf"
+      delegate_to: 127.0.0.1
+      become: true
+      become_user: "{{ localhost_user }}"
+      ignore_errors: true
+
+    - name: Git Clone server_banners_prompts role
+      git:
+        repo: git@github.com:stiliajohny/ansible-role-server-banners-prompts.git
+        dest: "./roles/ansible-role-server-banners-prompts"
+      delegate_to: 127.0.0.1
+      become: true
+      become_user: "{{ localhost_user }}"
+      ignore_errors: true
+
+    - name: Git Clone ansible-role-code-server role
+      git:
+        repo: git@github.com:stiliajohny/ansible-role-code-server.git
+        dest: "./roles/ansible-role-code-server"
+      delegate_to: 127.0.0.1
+      become: true
+      become_user: "{{ localhost_user }}"
+      ignore_errors: true
+
+    - name: Git Clone ansible-role-python role
+      git:
+        repo: git@github.com:stiliajohny/ansible-role-python.git
+        dest: "./roles/ansible-role-python"
+      delegate_to: 127.0.0.1
+      become: true
+      become_user: "{{ localhost_user }}"
+      ignore_errors: true
+
+    - name: Git Clone ansible-role-patching role
+      git:
+        repo: git@github.com:stiliajohny/ansible-role-patching.git
+        dest: "./roles/ansible-role-patching"
+      delegate_to: 127.0.0.1
+      become: true
+      become_user: "{{ localhost_user }}"
+      ignore_errors: true
+
+    - name: Git Clone ansible-role-apps role
+      git:
+        repo: git@github.com:stiliajohny/ansible-role-app.git
+        dest: "./roles/ansible-role-apps"
+      delegate_to: 127.0.0.1
+      become: true
+      become_user: "{{ localhost_user }}"
+      ignore_errors: true

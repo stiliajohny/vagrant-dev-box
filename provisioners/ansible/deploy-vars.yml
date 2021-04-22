@@ -1,0 +1,64 @@
+---
+# Overwrite any of the roles variables here
+# Mostly can be found under rthe role's default folder in the main.yml ( or any yml in there )
+
+# For the role server_banners_prompts
+# Systemd Services to be shown on the MOTD for their status
+services:
+  - sshd
+  - docker
+  - apparmor
+  - systemd-timesyncd
+  - ufw
+  - code-server
+
+# For the rol zsh
+# choose yours from https://zshthem.es/all/
+oh_my_zsh_theme: alanpeabody
+users:
+  - username: vagrant
+  - username: root
+
+# For the role awscli
+asdf_version: v0.6.2
+asdf_user: vagrant
+asdf_plugins:
+  - name: "terraform"
+    versions: ["0.12.0", "0.13.0", "0.14.0"]
+    global: "0.14.0"
+  - name: "packer"
+    versions: ["1.7.1"]
+    global: "1.7.1"
+  - name: "kubectl"
+    versions: ["1.17.0","1.18.0", "1.19.0", "1.20.0"]
+    global: "1.17.0"
+
+# For the role Python
+  # Specify names, versions and state
+pip_install_packages:
+  - name: setuptools_rust
+    version: "0.12.1"
+    state: present
+  - name: awscli
+    version: "1.11.91"
+    state: present
+  - name: ansible
+    version: "3.2.0"
+    state: present
+  # - name: molecule
+  # - name: molecule-vagrant
+  # - name: molecule-docker
+
+# For the role apps
+apps:
+  - git
+  - vim
+  - nano
+  - tmux
+  - jq
+  - vagrant
+  - virtualbox
+
+# For the role code-server
+deploy_code_server: true # default is false
+code_server_user_data_path: "/home/vagrant/sync_folder"
