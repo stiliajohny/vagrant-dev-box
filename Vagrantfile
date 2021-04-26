@@ -31,10 +31,8 @@ host = RbConfig::CONFIG['host_os']
 
 if host =~ /darwin/
     # sysctl returns Bytes and we need to convert to MB
-    mem = `sysctl -n hw.memsize`.to_i / 1024
-    cpu_count=`WMIC CPU Get DeviceID,NumberOfCores,NumberOfLogicalProcessors`
-    #TODO Get CPU count on macos
-    CPU_TO_PROVISON = VM_CPUS
+    mem = `sysctl -n hw.memsize`.to_i / 1024/1024
+    cpu_count=`sysctl -n hw.ncpu`
 elsif host =~ /linux/
     # meminfo shows KB and we need to convert to MB
     mem = `grep 'MemTotal' /proc/meminfo | sed -e 's/MemTotal://' -e 's/ kB//'`.to_i / 1024
@@ -85,15 +83,15 @@ end
 # Main Vagrant file
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-    config.vm.define "#{VM_NAME}" do |ubuntu|
+    config.vm.define "#{VM_NAME}" do |box|
 
-        ubuntu.vm.provision "ansible" do |ansible|
+        box.vm.provision "ansible" do |ansible|
             ansible.playbook = "./provisioners/ansible/pre-deploy.yml"
             ansible.verbose = ""
             ansible.compatibility_mode = "auto"
             ansible.raw_arguments = ["--connection=paramiko"]
         end
-        ubuntu.vm.provision "ansible" do |ansible|
+        box.vm.provision "ansible" do |ansible|
             ansible.playbook = "./provisioners/ansible/deploy.yml"
             ansible.verbose = ""
             ansible.compatibility_mode = "auto"
@@ -102,34 +100,39 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             ansible.raw_arguments = Shellwords.shellsplit(ENV["ANSIBLE_ARGS"]) if ENV["ANSIBLE_ARGS"]
             ansible.raw_arguments = ["--connection=paramiko"]
         end
-        # ubuntu.vm.provision "ansible" do |ansible|
+        # box.vm.provision "ansible" do |ansible|
         #     ansible.playbook = "./provisioners/ansible/post-deploy.yml"
         #     ansible.verbose = ""
         #     ansible.compatibility_mode = "auto"
         #     ansible.raw_arguments = ["--connection=paramiko"]
         # end
-        ubuntu.vm.box_check_update = VM_CHECK_UPDATE
-        ubuntu.vm.box = "#{VM_BOX_URL}"
-        ubuntu.vm.network :private_network, ip: "#{VM_IP}"
-        ubuntu.vm.hostname = "#{VM_NAME}#{VM_NAME_DOMAIN}"
+        box.vm.box_check_update = VM_CHECK_UPDATE
+        box.vm.box = "#{VM_BOX_URL}"
+        box.vm.network :private_network, ip: "#{VM_IP}"
+        box.vm.hostname = "#{VM_NAME}#{VM_NAME_DOMAIN}"
         PORTS_FW.each_with_index do |(name, port), index|
-            ubuntu.vm.network "forwarded_port", guest: "#{port[:guest]}", host: "#{port[:host]}"
+            box.vm.network "forwarded_port", guest: "#{port[:guest]}", host: "#{port[:host]}"
         end
         MOUNT_PATHS.each_with_index do |(name, info), index|
-            ubuntu.vm.synced_folder "#{info[:local]}" , "#{info[:remote]}", :mount_options => ["rw"], create: true, disabled: false, automount: true, SharedFoldersEnableSymlinksCreate: true
+            box.vm.synced_folder "#{info[:local]}" , "#{info[:remote]}", :mount_options => ["rw"], create: true, disabled: false, automount: true, SharedFoldersEnableSymlinksCreate: true
         end
-        ubuntu.vm.provider :virtualbox do |ubuntu|
-            ubuntu.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-            ubuntu.customize ["modifyvm", :id, "--memory", MEM_TO_PROVISION]
-            ubuntu.customize ["modifyvm", :id, "--cpus", CPU_TO_PROVISON]
-            ubuntu.customize ["modifyvm", :id, "--name", "#{VM_NAME}"]
-            ubuntu.customize ["modifyvm", :id, "--hwvirtex", "off"]
-            ubuntu.customize ["modifyvm", :id, "--pae", "on"]
-            ubuntu.customize ["modifyvm", :id, "--vram", "128"]
-            ubuntu.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
-            ubuntu.customize ["modifyvm", :id, "--accelerate3d", "off"] # Works better for Apple Mac hosts
-            ubuntu.name = "#{VM_NAME}"
-            ubuntu.gui = false
+        box.vm.provider :virtualbox do |vb|
+            vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+            vb.customize ["modifyvm", :id, "--memory", MEM_TO_PROVISION]
+            vb.customize ["modifyvm", :id, "--cpus", CPU_TO_PROVISON]
+            vb.customize ["modifyvm", :id, "--name", "#{VM_NAME}"]
+            vb.customize ["modifyvm", :id, "--hwvirtex", "off"]
+            vb.customize ["modifyvm", :id, "--pae", "on"]
+            vb.customize ["modifyvm", :id, "--vram", "128"]
+            vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
+            vb.customize ["modifyvm", :id, "--accelerate3d", "off"] # Works better for Apple Mac hosts
+            vb.customize ["modifyvm", :id, "--vram", "32"]
+            vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+            vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+            vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+            vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
+            vb.name = "#{VM_NAME}"
+            vb.gui = false
         end
     end
 end
