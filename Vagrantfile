@@ -13,8 +13,8 @@ VM_CHECK_UPDATE = true
 VM_CHECK_UPDATE = true
 VM_MEMORY = 8192
 VM_CPUS = 8
-CPU_DIVIDER = 4 #provision CPU AND MEM as a portion of the Host Resources
-MEM_DIVIDER = 4 #provision CPU AND MEM as a portion of the Host Resources
+CPU_DIVIDER = 4 #provision CPU as a portion of the Host Resources
+MEM_DIVIDER = 4 #provision MEM as a portion of the Host Resources
 VM_IP = "192.168.56.151"
 REPOS_PATH = "~/Documents/GitHub/"
 
@@ -22,7 +22,7 @@ MOUNT_PATHS={
     "sync_folder" =>{:local => "./sync_folder", :remote =>  "/home/vagrant/sync_folder" },
     "git_repo" =>{ :local => "~/", :remote =>  "/home/vagrant/git" }
     }
-PORTS_FW={ #TODO validate ports are working
+PORTS_FW={ 
     "vscode-8080"=> {:guest => "8080", :host => "8080"}
 }
 
@@ -40,7 +40,7 @@ elsif host =~ /linux/
 elsif host =~ /mswin|mingw|cygwin/
     # meminfo shows KB and we need to convert to MB
     mem = `wmic computersystem Get TotalPhysicalMemory`.split[1].to_i / 1024
-    #TODO Get CPU count on windows
+    # FIXME TODO Get CPU count on windows
     CPU_TO_PROVISON = VM_CPUS
 else
     print host
@@ -100,12 +100,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             ansible.raw_arguments = Shellwords.shellsplit(ENV["ANSIBLE_ARGS"]) if ENV["ANSIBLE_ARGS"]
             ansible.raw_arguments = ["--connection=paramiko"]
         end
-        # box.vm.provision "ansible" do |ansible|
-        #     ansible.playbook = "./provisioners/ansible/post-deploy.yml"
-        #     ansible.verbose = ""
-        #     ansible.compatibility_mode = "auto"
-        #     ansible.raw_arguments = ["--connection=paramiko"]
-        # end
+        box.vm.provision "ansible" do |ansible|
+            ansible.playbook = "./provisioners/ansible/post-deploy.yml"
+            ansible.verbose = ""
+            ansible.compatibility_mode = "auto"
+            ansible.raw_arguments = ["--connection=paramiko"]
+        end
         box.vm.box_check_update = VM_CHECK_UPDATE
         box.vm.box = "#{VM_BOX_URL}"
         box.vm.network :private_network, ip: "#{VM_IP}"
@@ -131,6 +131,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
             vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
             vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
+            vb.customize ["modifyvm", :id, "--usb", "on"]
+            vb.customize ["modifyvm", :id, "--usbehci", "off"]
             vb.name = "#{VM_NAME}"
             vb.gui = false
         end

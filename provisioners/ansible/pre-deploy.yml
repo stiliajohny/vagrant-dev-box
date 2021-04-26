@@ -60,3 +60,21 @@
       become: true
       become_user: "{{ localhost_user }}"
       ignore_errors: true
+
+    - name: Git Clone ansible-role-docker role
+      git:
+        repo: git@github.com:stiliajohny/ansible-role-docker.git
+        dest: "./roles/ansible-role-docker"
+      delegate_to: 127.0.0.1
+      become: true
+      become_user: "{{ localhost_user }}"
+      ignore_errors: true
+
+    - name: Git Clone ansible-role-zsh role
+      git:
+        repo: git@github.com:stiliajohny/ansible-role-zsh.git
+        dest: "./roles/ansible-role-zsh"
+      delegate_to: 127.0.0.1
+      become: true
+      become_user: "{{ localhost_user }}"
+      ignore_errors: true

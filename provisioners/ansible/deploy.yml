@@ -7,10 +7,10 @@
   roles:
     - ansible-role-patching # mostly leave enabled as it does a cache update on ubuntu repos
     - ansible-role-apps
-    - docker
+    - ansible-role-docker
     - ansible-role-python
     - ansible-role-asdf
-    - golang
-    - zsh
+    # - golang
+    - ansible-role-zsh
     - ansible-role-server-banners-prompts
     - ansible-role-code-server
