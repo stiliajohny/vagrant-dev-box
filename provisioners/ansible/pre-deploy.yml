@@ -7,9 +7,15 @@
   tasks:
     - set_fact: localhost_user="{{ lookup('env','USER') | default('ERROR', True) }}"
 
+    - name: Install Git
+      package:
+        name: git
+        state: latest
+      become: true
+
     - name: Git Clone ASDF role
       git:
-        repo: git@github.com:stiliajohny/ansible-role-asdf.git
+        repo: https://github.com/stiliajohny/ansible-role-asdf.git
         dest: "./roles/ansible-role-asdf"
       delegate_to: 127.0.0.1
       become: true
@@ -18,7 +24,7 @@
 
     - name: Git Clone server_banners_prompts role
       git:
-        repo: git@github.com:stiliajohny/ansible-role-server-banners-prompts.git
+        repo: https://github.com/stiliajohny/ansible-role-server-banners-prompts.git
         dest: "./roles/ansible-role-server-banners-prompts"
       delegate_to: 127.0.0.1
       become: true
@@ -27,7 +33,7 @@
 
     - name: Git Clone ansible-role-code-server role
       git:
-        repo: git@github.com:stiliajohny/ansible-role-code-server.git
+        repo: https://github.com/stiliajohny/ansible-role-code-server.git
         dest: "./roles/ansible-role-code-server"
       delegate_to: 127.0.0.1
       become: true
@@ -36,7 +42,7 @@
 
     - name: Git Clone ansible-role-python role
       git:
-        repo: git@github.com:stiliajohny/ansible-role-python.git
+        repo: https://github.com/stiliajohny/ansible-role-python.git
         dest: "./roles/ansible-role-python"
       delegate_to: 127.0.0.1
       become: true
@@ -45,7 +51,7 @@
 
     - name: Git Clone ansible-role-patching role
       git:
-        repo: git@github.com:stiliajohny/ansible-role-patching.git
+        repo: https://github.com/stiliajohny/ansible-role-patching.git
         dest: "./roles/ansible-role-patching"
       delegate_to: 127.0.0.1
       become: true
@@ -54,7 +60,7 @@
 
     - name: Git Clone ansible-role-apps role
       git:
-        repo: git@github.com:stiliajohny/ansible-role-app.git
+        repo: https://github.com/stiliajohny/ansible-role-app.git
         dest: "./roles/ansible-role-apps"
       delegate_to: 127.0.0.1
       become: true
@@ -63,7 +69,7 @@
 
     - name: Git Clone ansible-role-docker role
       git:
-        repo: git@github.com:stiliajohny/ansible-role-docker.git
+        repo: https://github.com/stiliajohny/ansible-role-docker.git
         dest: "./roles/ansible-role-docker"
       delegate_to: 127.0.0.1
       become: true
@@ -72,7 +78,7 @@
 
     - name: Git Clone ansible-role-zsh role
       git:
-        repo: git@github.com:stiliajohny/ansible-role-zsh.git
+        repo: https://github.com/stiliajohny/ansible-role-zsh.git
         dest: "./roles/ansible-role-zsh"
       delegate_to: 127.0.0.1
       become: true
