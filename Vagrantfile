@@ -20,8 +20,8 @@ REPOS_PATH = "~/Documents/GitHub/"
 ANSIBLE_CHOISE="ansible_local" #Alternative option is ansible ( ansible local will run from within the VM )
 
 MOUNT_PATHS={
-    "sync_folder" =>{:local => "./sync_folder", :remote =>  "/home/vagrant/sync_folder" },
-    "git_repo" =>{ :local => "~/", :remote =>  "/home/vagrant/git" }
+    "sync_folder" =>{:local => "./sync_folder", :remote =>  "/home/vagrant/sync_folder", :disabled => false },
+    "git_repo" =>{ :local => "~/", :remote =>  "/home/vagrant/git", :disabled => false }
     }
 PORTS_FW={
     "vscode-8080"=> {:guest => "8080", :host => "8080"}
@@ -114,21 +114,25 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             box.vm.network "forwarded_port", guest: "#{port[:guest]}", host: "#{port[:host]}"
         end
         MOUNT_PATHS.each_with_index do |(name, info), index|
-            box.vm.synced_folder "#{info[:local]}" , "#{info[:remote]}", :mount_options => ["rw"], create: true, disabled: false, automount: true, SharedFoldersEnableSymlinksCreate: true
+            box.vm.synced_folder "#{info[:local]}" , "#{info[:remote]}", :mount_options => ["rw"], create: true, disabled: "#{info[:disabled]}", automount: true, SharedFoldersEnableSymlinksCreate: true
         end
-        box.vm.provider :virtualbox do |vb|
+        box.vm.provider :virtualbox do |vb| #  customisations can be found here: https://www.virtualbox.org/manual/ch08.html
+            vb.linked_clone = true if Gem::Version.new(Vagrant::VERSION) >= Gem::Version.new('1.8.0')
+            vb.check_guest_additions = false
             vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
             vb.customize ["modifyvm", :id, "--memory", MEM_TO_PROVISION]
             vb.customize ["modifyvm", :id, "--cpus", CPU_TO_PROVISON]
             vb.customize ["modifyvm", :id, "--name", "#{VM_NAME}"]
-            vb.customize ["modifyvm", :id, "--hwvirtex", "off"]
+            vb.customize ["modifyvm", :id, "--hwvirtex", "on"]
             vb.customize ["modifyvm", :id, "--pae", "on"]
+            vb.customize ["modifyvm", :id, "--paravirtprovider", "kvm"]
             vb.customize ["modifyvm", :id, "--vram", "128"]
             vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
             vb.customize ["modifyvm", :id, "--accelerate3d", "off"] # Works better for Apple Mac hosts
             vb.customize ["modifyvm", :id, "--vram", "32"]
             vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
             vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+            vb.customize ["modifyvm", :id, "--draganddrop ", "bidirectional"]
             vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
             vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
             vb.customize ["modifyvm", :id, "--usb", "on"]
