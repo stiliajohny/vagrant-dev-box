@@ -17,12 +17,13 @@ CPU_DIVIDER = 4 #provision CPU as a portion of the Host Resources
 MEM_DIVIDER = 4 #provision MEM as a portion of the Host Resources
 VM_IP = "192.168.56.151"
 REPOS_PATH = "~/Documents/GitHub/"
+ANSIBLE_CHOISE="ansible_local" #Alternative option is ansible ( ansible local will run from within the VM )
 
 MOUNT_PATHS={
     "sync_folder" =>{:local => "./sync_folder", :remote =>  "/home/vagrant/sync_folder" },
     "git_repo" =>{ :local => "~/", :remote =>  "/home/vagrant/git" }
     }
-PORTS_FW={ 
+PORTS_FW={
     "vscode-8080"=> {:guest => "8080", :host => "8080"}
 }
 
@@ -39,9 +40,8 @@ elsif host =~ /linux/
     cpu_count = `awk "/^processor/ {++n} END {print n}" /proc/cpuinfo 2> /dev/null || sh -c 'sysctl hw.logicalcpu 2> /dev/null || echo ": 2"' | awk \'{print \$2}\' `.chomp
 elsif host =~ /mswin|mingw|cygwin/
     # meminfo shows KB and we need to convert to MB
-    mem = `wmic computersystem Get TotalPhysicalMemory`.split[1].to_i / 1024
-    # FIXME TODO Get CPU count on windows
-    CPU_TO_PROVISON = VM_CPUS
+    mem = `wmic computersystem Get TotalPhysicalMemory`.split[1].to_i / 1024 /1024
+    cpu_count = `wmic computersystem Get NumberOfLogicalProcessors`.split[1].to_i
 else
     print host
     print "Host OS is udentified\n"
@@ -85,13 +85,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     config.vm.define "#{VM_NAME}" do |box|
 
-        box.vm.provision "ansible" do |ansible|
+        box.vm.provision "#{ANSIBLE_CHOISE}" do |ansible|
             ansible.playbook = "./provisioners/ansible/pre-deploy.yml"
             ansible.verbose = ""
             ansible.compatibility_mode = "auto"
             ansible.raw_arguments = ["--connection=paramiko"]
         end
-        box.vm.provision "ansible" do |ansible|
+        box.vm.provision "#{ANSIBLE_CHOISE}" do |ansible|
             ansible.playbook = "./provisioners/ansible/deploy.yml"
             ansible.verbose = ""
             ansible.compatibility_mode = "auto"
@@ -100,7 +100,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             ansible.raw_arguments = Shellwords.shellsplit(ENV["ANSIBLE_ARGS"]) if ENV["ANSIBLE_ARGS"]
             ansible.raw_arguments = ["--connection=paramiko"]
         end
-        box.vm.provision "ansible" do |ansible|
+        box.vm.provision "#{ANSIBLE_CHOISE}" do |ansible|
             ansible.playbook = "./provisioners/ansible/post-deploy.yml"
             ansible.verbose = ""
             ansible.compatibility_mode = "auto"
