@@ -2,6 +2,8 @@
 # vi: set ft=ruby :require 'rbconfig'
 
 require 'yaml'
+require 'net/http'
+require 'uri'
 
 ENV["LC_ALL"] = "en_US.UTF-8"
 
@@ -83,9 +85,22 @@ elsif ARGV[0] == 'destroy'
     print "Have you saved all your work? \n"
 end
 
+require "open-uri"
+
+open("https://avatars.githubusercontent.com/u/17669235") do |image|
+    File.open("#{File.dirname(__FILE__)}/file.png", "wb") do |file|
+        file.write(image.read)
+    end
+end
+
+
+def gui_enabled?
+    !ENV.fetch('GUI', '').empty?
+end
+
 # Main Vagrant file
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-    
+
     config.ssh.forward_agent = true
     config.vm.define "#{VM_NAME}" do |box|
 
@@ -129,11 +144,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             vb.customize ["modifyvm", :id, "--name", "#{VM_NAME}"]
             vb.customize ["modifyvm", :id, "--hwvirtex", "on"]
             vb.customize ["modifyvm", :id, "--pae", "on"]
+            vb.customize ["modifyvm", :id, "--vtxvpid", "on"]
+            vb.customize ["modifyvm", :id, "--vtxux", "on"]
             vb.customize ["modifyvm", :id, "--paravirtprovider", "kvm"]
-            vb.customize ["modifyvm", :id, "--vtxvpid ", "on"]
-            vb.customize ["modifyvm", :id, "--vtxux ", "on"]
             vb.customize ["modifyvm", :id, "--vram", "128"]
-            vb.customize ["modifyvm", :id, "--graphicscontroller", "vboxvga"]
+            vb.customize ["modifyvm", :id, "--graphicscontroller", "vboxsvga"]
             vb.customize ["modifyvm", :id, "--accelerate3d", "off"] # Works better for Apple Mac hosts
             vb.customize ["modifyvm", :id, "--vram", "32"]
             vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
@@ -143,8 +158,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
             vb.customize ["modifyvm", :id, "--usb", "on"]
             vb.customize ["modifyvm", :id, "--usbehci", "off"]
+            vb.customize ["modifyvm", :id, "--iconfile", "#{File.dirname(__FILE__)}/file.png"]
             vb.name = "#{VM_NAME}"
-            vb.gui = "#{VM_GUI}"
+            vb.gui = gui_enabled?
         end
     end
 end
