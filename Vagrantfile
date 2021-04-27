@@ -3,9 +3,12 @@
 
 require 'yaml'
 
+ENV["LC_ALL"] = "en_US.UTF-8"
+
 # GLOBAL VARIABLES TO BE USED
 # Change if you only know what you are doing :)
 VAGRANTFILE_API_VERSION = "2"
+VM_GUI=false
 VM_NAME = "Archlinux-Vagrant"
 VM_BOX_URL = "archlinux/archlinux"
 VM_NAME_DOMAIN = ".local"
@@ -82,7 +85,8 @@ end
 
 # Main Vagrant file
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-
+    
+    config.ssh.forward_agent = true
     config.vm.define "#{VM_NAME}" do |box|
 
         box.vm.provision "#{ANSIBLE_CHOISE}" do |ansible|
@@ -126,19 +130,21 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             vb.customize ["modifyvm", :id, "--hwvirtex", "on"]
             vb.customize ["modifyvm", :id, "--pae", "on"]
             vb.customize ["modifyvm", :id, "--paravirtprovider", "kvm"]
+            vb.customize ["modifyvm", :id, "--vtxvpid ", "on"]
+            vb.customize ["modifyvm", :id, "--vtxux ", "on"]
             vb.customize ["modifyvm", :id, "--vram", "128"]
-            vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
+            vb.customize ["modifyvm", :id, "--graphicscontroller", "vboxvga"]
             vb.customize ["modifyvm", :id, "--accelerate3d", "off"] # Works better for Apple Mac hosts
             vb.customize ["modifyvm", :id, "--vram", "32"]
             vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
             vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
-            vb.customize ["modifyvm", :id, "--draganddrop ", "bidirectional"]
+            vb.customize ["modifyvm", :id, "--draganddrop", "bidirectional"]
             vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
             vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
             vb.customize ["modifyvm", :id, "--usb", "on"]
             vb.customize ["modifyvm", :id, "--usbehci", "off"]
             vb.name = "#{VM_NAME}"
-            vb.gui = false
+            vb.gui = "#{VM_GUI}"
         end
     end
 end
