@@ -1,3 +1,4 @@
 sync_folder/**
 **/*.log
 .vagrant
+**/file.png
