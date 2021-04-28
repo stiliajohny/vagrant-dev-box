@@ -4,6 +4,8 @@
 require 'yaml'
 require 'net/http'
 require 'uri'
+require "open-uri"
+
 
 ENV["LC_ALL"] = "en_US.UTF-8"
 
@@ -18,6 +20,7 @@ VM_CHECK_UPDATE = true
 VM_CHECK_UPDATE = true
 VM_MEMORY = 8192
 VM_CPUS = 8
+VM_ICON="https://avatars.githubusercontent.com/u/17669235"
 CPU_DIVIDER = 4 #provision CPU as a portion of the Host Resources
 MEM_DIVIDER = 4 #provision MEM as a portion of the Host Resources
 VM_IP = "192.168.56.151"
@@ -55,6 +58,7 @@ else
     MEM_TO_PROVISION = VM_MEMORY
 end
 
+# Calculate a portion of the Host's resources
 CPU_TO_PROVISON=cpu_count.to_i.div(CPU_DIVIDER)
 MEM_TO_PROVISION=mem.to_i.div(MEM_DIVIDER)
 
@@ -85,10 +89,9 @@ elsif ARGV[0] == 'destroy'
     print "Have you saved all your work? \n"
 end
 
-require "open-uri"
 
-open("https://avatars.githubusercontent.com/u/17669235") do |image|
-    File.open("#{File.dirname(__FILE__)}/file.png", "wb") do |file|
+open("#{VM_ICON}") do |image|
+    File.open("#{File.dirname(__FILE__)}/vm_icon.png", "wb") do |file|
         file.write(image.read)
     end
 end
@@ -158,7 +161,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
             vb.customize ["modifyvm", :id, "--usb", "on"]
             vb.customize ["modifyvm", :id, "--usbehci", "off"]
-            vb.customize ["modifyvm", :id, "--iconfile", "#{File.dirname(__FILE__)}/file.png"]
+            vb.customize ["modifyvm", :id, "--iconfile", "#{File.dirname(__FILE__)}/vm_icon.png"]
             vb.name = "#{VM_NAME}"
             vb.gui = gui_enabled?
         end
