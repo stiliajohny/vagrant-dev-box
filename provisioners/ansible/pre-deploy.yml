@@ -13,6 +13,24 @@
         state: latest
       become: true
 
+    - name: Git Clone VNC role
+      git:
+        repo: https://github.com/stiliajohny/ansible-role-vnc.git
+        dest: "./roles/ansible-role-vnc"
+      delegate_to: 127.0.0.1
+      become: true
+      become_user: "{{ localhost_user }}"
+      ignore_errors: true
+
+    - name: Git Clone I3WM role
+      git:
+        repo: https://github.com/stiliajohny/ansible-role-i3.git
+        dest: "./roles/ansible-role-i3"
+      delegate_to: 127.0.0.1
+      become: true
+      become_user: "{{ localhost_user }}"
+      ignore_errors: true
+
     - name: Git Clone ASDF role
       git:
         repo: https://github.com/stiliajohny/ansible-role-asdf.git
