@@ -25,7 +25,7 @@ CPU_DIVIDER = 4 #provision CPU as a portion of the Host Resources
 MEM_DIVIDER = 4 #provision MEM as a portion of the Host Resources
 VM_IP = "192.168.56.151"
 REPOS_PATH = "~/Documents/GitHub/"
-ANSIBLE_CHOISE="ansible_local" #Alternative option is ansible ( ansible local will run from within the VM )
+ANSIBLE_CHOISE="ansible" #Alternative option is ansible ( ansible local will run from within the VM )
 
 MOUNT_PATHS={
     "sync_folder" =>{:local => "./sync_folder", :remote =>  "/home/vagrant/sync_folder", :disabled => false },
@@ -114,7 +114,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             ansible.raw_arguments = ["--connection=paramiko"]
         end
         box.vm.provision "#{ANSIBLE_CHOISE}" do |ansible|
-            ansible.playbook = "./provisioners/ansible/deploy.yml"
+            ansible.playbook = "./provisioners/ansible/main-deploy.yml"
             ansible.verbose = ""
             ansible.compatibility_mode = "auto"
             #ansible.tags="virt" # NOTE Replace virt with the preffered role you want to force coma sepperated.
@@ -139,7 +139,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             box.vm.synced_folder "#{info[:local]}" , "#{info[:remote]}", :mount_options => ["rw"], create: true, disabled: "#{info[:disabled]}", automount: true, SharedFoldersEnableSymlinksCreate: true
         end
         box.vm.provider :virtualbox do |vb| #  customisations can be found here: https://www.virtualbox.org/manual/ch08.html
-            vb.linked_clone = true if Gem::Version.new(Vagrant::VERSION) >= Gem::Version.new('1.8.0')
             vb.check_guest_additions = false
             vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
             vb.customize ["modifyvm", :id, "--memory", MEM_TO_PROVISION]
