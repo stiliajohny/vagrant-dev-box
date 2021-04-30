@@ -42,9 +42,6 @@ pip_install_packages:
   - name: setuptools_rust
     version: "0.12.1"
     state: present
-  - name: awscli
-    version: "1.11.91"
-    state: present
   - name: ansible
     version: "3.2.0"
     state: present
@@ -68,3 +65,9 @@ code_server_user_data_path: "/home/vagrant/sync_folder"
 
 # For the docker role
 docker_users: ['vagrant']
+
+# For the VNC role 
+tigervnc_user: vagrant
+tigervnc_vncpass: vagrant
+tigervnc_user_home: "/home/{{ tigervnc_user }}"
+
