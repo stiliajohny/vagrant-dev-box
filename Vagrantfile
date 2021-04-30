@@ -32,7 +32,11 @@ MOUNT_PATHS={
     "git_repo" =>{ :local => "~/", :remote =>  "/home/vagrant/git", :disabled => false }
     }
 PORTS_FW={
-    "vscode-8080"=> {:guest => "8080", :host => "8080"}
+    "vscode-8080"=> {:guest => "8080", :host => "8080"},
+    "vscode-8080"=> {:guest => "5900", :host => "5900"},
+    "vscode-8080"=> {:guest => "5901", :host => "5901"},
+    "vscode-8080"=> {:guest => "6080", :host => "6080"},
+    "vscode-8080"=> {:guest => "6081", :host => "6081"},
 }
 
 # Calculate CPU and MEM based on a divider
@@ -150,7 +154,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             vb.customize ["modifyvm", :id, "--vtxux", "on"]
             vb.customize ["modifyvm", :id, "--paravirtprovider", "kvm"]
             vb.customize ["modifyvm", :id, "--vram", "128"]
-            vb.customize ["modifyvm", :id, "--graphicscontroller", "vboxsvga"]
+            vb.customize ["modifyvm", :id, "--graphicscontroller", "vboxvga"]
             vb.customize ["modifyvm", :id, "--accelerate3d", "off"] # Works better for Apple Mac hosts
             vb.customize ["modifyvm", :id, "--vram", "32"]
             vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
