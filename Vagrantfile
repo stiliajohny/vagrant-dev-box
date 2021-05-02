@@ -28,15 +28,15 @@ REPOS_PATH = "~/Documents/GitHub/"
 ANSIBLE_CHOISE="ansible" #Alternative option is ansible ( ansible local will run from within the VM )
 
 MOUNT_PATHS={
-    "sync_folder" =>{:local => "./sync_folder", :remote =>  "/home/vagrant/sync_folder", :disabled => false },
-    "git_repo" =>{ :local => "~/", :remote =>  "/home/vagrant/git", :disabled => false }
+    "sync_folder" =>{:local => "./sync_folder", :remote =>  "/home/vagrant/sync_folder" },
+    "git_repo" =>{ :local => "~/", :remote =>  "/home/vagrant/git" }
     }
 PORTS_FW={
-    "vscode-8080"=> {:guest => "8080", :host => "8080"},
-    "vscode-8080"=> {:guest => "5900", :host => "5900"},
-    "vscode-8080"=> {:guest => "5901", :host => "5901"},
-    "vscode-8080"=> {:guest => "6080", :host => "6080"},
-    "vscode-8080"=> {:guest => "6081", :host => "6081"},
+    "vscode"=> {:guest => "8080", :host => "8080"},
+    "vncserver0"=> {:guest => "5900", :host => "5900"},
+    "vncserver1"=> {:guest => "5901", :host => "5901"},
+    "novnc0-xorg"=> {:guest => "6080", :host => "6080"},
+    "novnc1vncserver"=> {:guest => "6081", :host => "6081"}
 }
 
 # Calculate CPU and MEM based on a divider
@@ -107,6 +107,14 @@ end
 
 # Main Vagrant file
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    # required_plugins = [
+    #     "vagrant-hostmanager",
+    #     "vagrant-vbguest",
+    #     "vagrant-hosts",
+    #     "vagrant-ansible-local",
+    # ]
+    # # if encounted issues with installing plugins do VAGRANT_DISABLE_STRICT_DEPENDENCY_ENFORCEMENT=1 before a vagrant command
+    # config.vagrant.plugins = required_plugins
 
     config.ssh.forward_agent = true
     config.vm.define "#{VM_NAME}" do |box|
@@ -140,7 +148,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             box.vm.network "forwarded_port", guest: "#{port[:guest]}", host: "#{port[:host]}"
         end
         MOUNT_PATHS.each_with_index do |(name, info), index|
-            box.vm.synced_folder "#{info[:local]}" , "#{info[:remote]}", :mount_options => ["rw"], create: true, disabled: "#{info[:disabled]}", automount: true, SharedFoldersEnableSymlinksCreate: true
+            box.vm.synced_folder "#{info[:local]}" , "#{info[:remote]}", :mount_options => ["rw"], create: true, automount: true, SharedFoldersEnableSymlinksCreate: true
         end
         box.vm.provider :virtualbox do |vb| #  customisations can be found here: https://www.virtualbox.org/manual/ch08.html
             vb.check_guest_additions = false
@@ -160,10 +168,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
             vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
             vb.customize ["modifyvm", :id, "--draganddrop", "bidirectional"]
-            vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-            vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
+            # vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
             vb.customize ["modifyvm", :id, "--usb", "on"]
             vb.customize ["modifyvm", :id, "--usbehci", "off"]
+            vb.customize ["modifyvm", :id, "--uartmode1", "file",File.join(Dir.pwd, "/#{VM_NAME}.log")]
             vb.customize ["modifyvm", :id, "--iconfile", "#{File.dirname(__FILE__)}/vm_icon.png"]
             vb.name = "#{VM_NAME}"
             vb.gui = gui_enabled?
