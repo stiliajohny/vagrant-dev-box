@@ -11,7 +11,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/stiliajohny/Vagrant-Dev-Box">
-    <img src="https://github.com/stiliajohny/Vagrant-Dev-Box/raw/main/.assets/logo.png" alt="Logo" width="80" height="80">
+    <img src="https://github.com/stiliajohny/Vagrant-Dev-Box/raw/master/.assets/logo.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Vagrant Dev Box</h3>
@@ -48,7 +48,12 @@
 
 ## About The Project
 
-<!-- [![Product Name Screen Shot][product-screenshot]](./.assets/screenshot.png) -->
+<p align="center">
+  <a href="https://github.com/stiliajohny/Vagrant-Dev-Box">
+    <img src="https://github.com/stiliajohny/Vagrant-Dev-Box/raw/master/.assets/screenshot0.png" alt="Logo" width="80" height="80">
+    <img src="https://github.com/stiliajohny/Vagrant-Dev-Box/raw/master/.assets/screenshot1.png" alt="Logo" width="80" height="80">
+  </a>
+</p>
 
 I always wanted to have a quick way to build a VM that contains all of my favorite tools and configs.
 Here is my take on a Dev Box build with Ansible and Vagrant.
