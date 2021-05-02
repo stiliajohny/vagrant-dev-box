@@ -13,6 +13,15 @@
         state: latest
       become: true
 
+    - name: Git Clone xorg role
+      git:
+        repo: https://github.com/stiliajohny/ansible-role-xorg.git
+        dest: "./roles/ansible-role-xorg"
+      delegate_to: 127.0.0.1
+      become: true
+      become_user: "{{ localhost_user }}"
+      ignore_errors: true
+
     - name: Git Clone VNC role
       git:
         repo: https://github.com/stiliajohny/ansible-role-vnc.git
