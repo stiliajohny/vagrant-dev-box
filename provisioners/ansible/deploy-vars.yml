@@ -8,6 +8,10 @@ services:
   - sshd
   - systemd-timesyncd
   - code-server
+  - vncserver@:0
+  - vncserver@:1
+  - novnc@0
+  - novnc@1
 
 # For the rol zsh
 # choose yours from https://zshthem.es/all/
@@ -35,7 +39,7 @@ asdf_plugins:
     global: "1.17.0"
 
 # For the role Python
-  # Specify names, versions and state
+# Specify names, versions and state
 pip_package: python-pip
 
 pip_install_packages:
@@ -58,6 +62,8 @@ apps:
   - jq
   - vagrant
   - virtualbox
+  - firefox
+  - code
 
 # For the role code-server
 deploy_code_server: true # default is false
@@ -66,7 +72,7 @@ code_server_user_data_path: "/home/vagrant/sync_folder"
 # For the docker role
 docker_users: ['vagrant']
 
-# For the VNC role 
+# For the VNC role
 tigervnc_user: vagrant
 tigervnc_vncpass: vagrant
 tigervnc_user_home: "/home/{{ tigervnc_user }}"
