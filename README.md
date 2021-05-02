@@ -105,7 +105,7 @@ Use it carefully.
    -  `vagrant ssh 123abc` to ssh in the specific instance via the ID gathered earlier
 
 ### Web accesible apps
-- VNC on browser ( Xorg Display ) - http://localhost:6081/vnc.html)
+- VNC on browser ( Xorg Display ) - http://localhost:6081/vnc.html
 - VNC on browser ( Virt Display ) - http://localhost:6081/vnc.html
 - VSCode on browser - http://localhost:8080
 
