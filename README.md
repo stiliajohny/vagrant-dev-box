@@ -11,7 +11,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/stiliajohny/Vagrant-Dev-Box">
-    <img src="https://github.com/stiliajohny/Vagrant-Dev-Box/raw/master/.assets/logo.png" alt="Logo" width="80" height="80">
+    <img src="https://github.com/stiliajohny/Vagrant-Dev-Box/raw/main/.assets/logo.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Vagrant Dev Box</h3>
@@ -50,8 +50,8 @@
 
 <p align="center">
   <a href="https://github.com/stiliajohny/Vagrant-Dev-Box">
-    <img src="https://github.com/stiliajohny/Vagrant-Dev-Box/raw/master/.assets/screenshot0.png" alt="Logo" width="80" height="80">
-    <img src="https://github.com/stiliajohny/Vagrant-Dev-Box/raw/master/.assets/screenshot1.png" alt="Logo" width="80" height="80">
+    <img src="https://github.com/stiliajohny/vagrant-dev-box/raw/main/.assets/screenshot0.png" alt="Logo" width="50%" height="50%">
+    <img src="https://github.com/stiliajohny/vagrant-dev-box/raw/main/.assets/screenshot1.png" alt="Logo" width="50%" height="50%">
   </a>
 </p>
 
