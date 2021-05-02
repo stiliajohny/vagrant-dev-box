@@ -38,6 +38,8 @@
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
 - [Usage](#usage)
+  - [Web accesible apps](#web-accesible-apps)
+  - [i3-wm keybinds](#i3-wm-keybinds)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [License](#license)
@@ -57,6 +59,7 @@
 
 I always wanted to have a quick way to build a VM that contains all of my favorite tools and configs.
 Here is my take on a Dev Box build with Ansible and Vagrant.
+
 
 Use it carefully.
 ### Built With
@@ -101,6 +104,14 @@ Use it carefully.
    -  `vagrant global-status` to get all the running instances ID
    -  `vagrant ssh 123abc` to ssh in the specific instance via the ID gathered earlier
 
+### Web accesible apps
+- VNC on browser ( Xorg Display ) - http://localhost:6081/vnc.html)
+- VNC on browser ( Virt Display ) - http://localhost:6081/vnc.html
+- VSCode on browser - http://localhost:8080
+
+### i3-wm keybinds
+- <kbd>Ctrl</kbd> - Mod key
+- <kbd>Ctrl</kbd>+<kbd>d</kbd> - rofi menu
 
 ---
 
