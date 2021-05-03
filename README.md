@@ -148,7 +148,7 @@ Distributed under the GPL-3.0 License. See `LICENSE` for more information.
 
 ## Contact
 
-Your Name - [@john_stilia](https://twitter.com/john_stilia) - stilia.johny@gmail.com
+John Stilia - [@john_stilia](https://twitter.com/john_stilia) - stilia.johny@gmail.com
 
 <!--
 Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
