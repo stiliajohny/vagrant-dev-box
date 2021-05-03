@@ -65,9 +65,13 @@ apps:
   - firefox
   - code
   - openvpn
+  - fakeroot
+  - nmap
+  - nikto
   - terminator
-
-
+  - gobuster
+  - metasploit
+  - exploit-db
 
 # For the role code-server
 deploy_code_server: true # default is false
