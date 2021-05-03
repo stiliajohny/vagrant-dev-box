@@ -1,6 +1,6 @@
 ---
 # Overwrite any of the roles variables here
-# Mostly can be found under rthe role's default folder in the main.yml ( or any yml in there )
+# Mostly can be found under the role's default folder in the main.yml ( or any yml in there )
 
 # For the role server_banners_prompts
 # Systemd Services to be shown on the MOTD for their status
@@ -64,6 +64,10 @@ apps:
   - virtualbox
   - firefox
   - code
+  - openvpn
+  - terminator
+
+
 
 # For the role code-server
 deploy_code_server: true # default is false
