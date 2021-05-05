@@ -6,7 +6,6 @@ require 'net/http'
 require 'uri'
 require "open-uri"
 
-
 ENV["LC_ALL"] = "en_US.UTF-8"
 
 # GLOBAL VARIABLES TO BE USED
@@ -18,26 +17,27 @@ VM_BOX_URL = "archlinux/archlinux"
 VM_NAME_DOMAIN = ".local"
 VM_CHECK_UPDATE = true
 VM_CHECK_UPDATE = true
-VM_MEMORY = 8192
-VM_CPUS = 8
+VM_DEFAULT_MEMORY = 8192
+VM_DEFAULT_CPU = 8
 VM_DISK_SIZE = '50GB'
 VM_ICON="https://avatars.githubusercontent.com/u/17669235"
 CPU_DIVIDER = 4 #provision CPU as a portion of the Host Resources
 MEM_DIVIDER = 4 #provision MEM as a portion of the Host Resources
 VM_IP = "192.168.56.151"
+VM_POST_UP_MESSAGE = "Welcome"
 REPOS_PATH = "~/Documents/GitHub/"
-ANSIBLE_CHOISE="ansible" #Alternative option is ansible ( ansible local will run from within the VM )
+ANSIBLE_CHOISE="ansible" #Options are ansible and ansible_locaauto_correctl( ansible_local will run from within the VM )
 
 MOUNT_PATHS={
     "sync_folder" =>{:local => "./sync_folder", :remote =>  "/home/vagrant/sync_folder" },
     "git_repo" =>{ :local => "~/", :remote =>  "/home/vagrant/git" }
     }
 PORTS_FW={
-    "vscode"=> {:guest => "8080", :host => "8080"},
-    "vncserver0"=> {:guest => "5900", :host => "5900"},
-    "vncserver1"=> {:guest => "5901", :host => "5901"},
-    "novnc0-xorg"=> {:guest => "6080", :host => "6080"},
-    "novnc1vncserver"=> {:guest => "6081", :host => "6081"}
+    "vscode"=> {:guest => "8080", :host => "8080", :protocol => "tcp", :auto_correct => "true"},
+    "vncserver0"=> {:guest => "5900", :host => "5900", :protocol => "tcp", :auto_correct => "true"},
+    "vncserver1"=> {:guest => "5901", :host => "5901", :protocol => "tcp", :auto_correct => "true"},
+    "novnc0-xorg"=> {:guest => "6080", :host => "6080", :protocol => "tcp", :auto_correct => "true"},
+    "novnc1vncserver"=> {:guest => "6081", :host => "6081", :protocol => "tcp", :auto_correct => "true"}
 }
 
 # Calculate CPU and MEM based on a divider
@@ -58,9 +58,9 @@ elsif host =~ /mswin|mingw|cygwin/
 else
     print host
     print "Host OS is udentified\n"
-    print "Using default CPU and RAM"
-    CPU_TO_PROVISON = VM_CPUS
-    MEM_TO_PROVISION = VM_MEMORY
+    print "Using default CPU: #{VM_DEFAULT_CPU} and RAM: #{VM_DEFAULT_MEMORY}"
+    CPU_TO_PROVISON = VM_DEFAULT_CPUS
+    MEM_TO_PROVISION = VM_DEFAULT_MEMORY
 end
 
 # Calculate a portion of the Host's resources
@@ -68,14 +68,13 @@ CPU_TO_PROVISON=cpu_count.to_i.div(CPU_DIVIDER)
 MEM_TO_PROVISION=mem.to_i.div(MEM_DIVIDER)
 
 
-print "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* \n"
-print "Provisioned CPU: #{CPU_TO_PROVISON}\n"
-print "Provisioned MEMORY: #{MEM_TO_PROVISION}\n"
-print "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* \n"
-
-
 # Check vagrant input and ask user for input to populate some variables
 if  Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/#{VM_NAME}/*").empty? || ARGV[0] == 'up'
+    print "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* \n"
+    print "Provisioned CPU: #{CPU_TO_PROVISON}\n"
+    print "Provisioned MEMORY: #{MEM_TO_PROVISION}\n"
+    print "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* \n"
+
     print "Enter the ABSOLUTE/RELATIVE path to the folder you keep your git projects: ( defaults to ~/ on host ) \n"
     print "e.g: /home/user/Documents/git_code/ \n"
     REPOS_PATH = STDIN.gets.chomp
@@ -92,6 +91,8 @@ if  Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/#{VM_NAME}/*").empty? 
     print "\n"
 elsif ARGV[0] == 'destroy'
     print "Have you saved all your work? \n"
+elsif ARGV[0] == 'reload'
+    printf "Reloading..."
 end
 
 
@@ -113,14 +114,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         "vagrant-vbguest",
         "vagrant-hosts",
         "vagrant-ansible-local",
-        "vagrant-disksize"
+        "vagrant-disksize",
     ]
     # if encounted issues with installing plugins do VAGRANT_DISABLE_STRICT_DEPENDENCY_ENFORCEMENT=1 before a vagrant command
     config.vagrant.plugins = required_plugins
 
     config.ssh.forward_agent = true
-    config.vm.define "#{VM_NAME}" do |box|
+    config.vm.post_up_message = "#{VM_POST_UP_MESSAGE}"
 
+    config.vm.define "#{VM_NAME}" do |box|
         box.vm.provision "#{ANSIBLE_CHOISE}" do |ansible|
             ansible.playbook = "./provisioners/ansible/pre-deploy.yml"
             ansible.verbose = ""
@@ -148,7 +150,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         box.vm.network :private_network, ip: "#{VM_IP}"
         box.vm.hostname = "#{VM_NAME}#{VM_NAME_DOMAIN}"
         PORTS_FW.each_with_index do |(name, port), index|
-            box.vm.network "forwarded_port", guest: "#{port[:guest]}", host: "#{port[:host]}"
+            box.vm.network "forwarded_port", guest: "#{port[:guest]}", host: "#{port[:host]}", protocol: "#{port[:protocol]}", auto_correct: "#{port[:auto_correct]}"
         end
         MOUNT_PATHS.each_with_index do |(name, info), index|
             box.vm.synced_folder "#{info[:local]}" , "#{info[:remote]}", :mount_options => ["rw"], create: true, automount: true, SharedFoldersEnableSymlinksCreate: false
@@ -172,7 +174,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
             vb.customize ["modifyvm", :id, "--draganddrop", "bidirectional"]
             # vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
-            vb.customize ["modifyvm", :id, "--usb", "on"]
+            vb.customize ["modifyvm", :id, "--usb", "off"]
             vb.customize ["modifyvm", :id, "--usbehci", "off"]
             vb.customize ["modifyvm", :id, "--uartmode1", "file",File.join(Dir.pwd, "/#{VM_NAME}.log")]
             vb.customize ["modifyvm", :id, "--iconfile", "#{File.dirname(__FILE__)}/vm_icon.png"]
