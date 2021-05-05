@@ -20,6 +20,7 @@ VM_CHECK_UPDATE = true
 VM_CHECK_UPDATE = true
 VM_MEMORY = 8192
 VM_CPUS = 8
+VM_DISK_SIZE = '50GB'
 VM_ICON="https://avatars.githubusercontent.com/u/17669235"
 CPU_DIVIDER = 4 #provision CPU as a portion of the Host Resources
 MEM_DIVIDER = 4 #provision MEM as a portion of the Host Resources
@@ -107,14 +108,15 @@ end
 
 # Main Vagrant file
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-    # required_plugins = [
-    #     "vagrant-hostmanager",
-    #     "vagrant-vbguest",
-    #     "vagrant-hosts",
-    #     "vagrant-ansible-local",
-    # ]
-    # # if encounted issues with installing plugins do VAGRANT_DISABLE_STRICT_DEPENDENCY_ENFORCEMENT=1 before a vagrant command
-    # config.vagrant.plugins = required_plugins
+    required_plugins = [
+        "vagrant-hostmanager",
+        "vagrant-vbguest",
+        "vagrant-hosts",
+        "vagrant-ansible-local",
+        "vagrant-disksize"
+    ]
+    # if encounted issues with installing plugins do VAGRANT_DISABLE_STRICT_DEPENDENCY_ENFORCEMENT=1 before a vagrant command
+    config.vagrant.plugins = required_plugins
 
     config.ssh.forward_agent = true
     config.vm.define "#{VM_NAME}" do |box|
@@ -129,7 +131,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             ansible.playbook = "./provisioners/ansible/main-deploy.yml"
             ansible.verbose = ""
             ansible.compatibility_mode = "auto"
-            #ansible.tags="virt" # NOTE Replace virt with the preffered role you want to force coma sepperated.
+            # ansible.tags="ansible-role-docker" # NOTE Replace virt with the preffered role you want to force coma sepperated.
             #http://www.inanzzz.com/index.php/post/wfj9/running-ansible-provisioning-by-passing-arguments-in-vagrant
             ansible.raw_arguments = Shellwords.shellsplit(ENV["ANSIBLE_ARGS"]) if ENV["ANSIBLE_ARGS"]
             ansible.raw_arguments = ["--connection=paramiko"]
@@ -142,13 +144,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         end
         box.vm.box_check_update = VM_CHECK_UPDATE
         box.vm.box = "#{VM_BOX_URL}"
+        box.disksize.size = "#{VM_DISK_SIZE}"
         box.vm.network :private_network, ip: "#{VM_IP}"
         box.vm.hostname = "#{VM_NAME}#{VM_NAME_DOMAIN}"
         PORTS_FW.each_with_index do |(name, port), index|
             box.vm.network "forwarded_port", guest: "#{port[:guest]}", host: "#{port[:host]}"
         end
         MOUNT_PATHS.each_with_index do |(name, info), index|
-            box.vm.synced_folder "#{info[:local]}" , "#{info[:remote]}", :mount_options => ["rw"], create: true, automount: true, SharedFoldersEnableSymlinksCreate: true
+            box.vm.synced_folder "#{info[:local]}" , "#{info[:remote]}", :mount_options => ["rw"], create: true, automount: true, SharedFoldersEnableSymlinksCreate: false
         end
         box.vm.provider :virtualbox do |vb| #  customisations can be found here: https://www.virtualbox.org/manual/ch08.html
             vb.check_guest_additions = false

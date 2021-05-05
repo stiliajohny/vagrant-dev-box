@@ -7,6 +7,7 @@
 services:
   - sshd
   - systemd-timesyncd
+  - docker
   - code-server
   - vncserver@:0
   - vncserver@:1
@@ -49,6 +50,9 @@ pip_install_packages:
   - name: ansible
     version: "3.2.0"
     state: present
+  - name: docker_py
+    version: "1.10.6"
+    state: present
   # - name: molecule
   # - name: molecule-vagrant
   # - name: molecule-docker
@@ -77,11 +81,42 @@ apps:
 deploy_code_server: true # default is false
 code_server_user_data_path: "/home/vagrant/sync_folder"
 
-# For the docker role
-docker_users: ['vagrant']
 
 # For the VNC role
 tigervnc_user: vagrant
 tigervnc_vncpass: vagrant
 tigervnc_user_home: "/home/{{ tigervnc_user }}"
 
+# For the docker role
+docker_users: ['vagrant']
+docker_images_pull: true
+docker_images:
+  - alpine
+  - amazonlinux
+  - ansible/awx
+  - aquasec/kube-hunter
+  - aquasec/trivy
+  - bash
+  - bash:5.0.18
+  - busybox
+  - centos
+  - centos:centos7
+  - centos:centos8
+  - concourse/concourse
+  - diverdane/secretless-k8s-demo
+  - elasticsearch:7.9.1
+  - fedora:29
+  - fedora:30
+  - fedora:31
+  - jekyll/jekyll
+  - kalilinux/kali
+  - kalilinux/kali-rolling
+  - kibana:7.9.1
+  - mariadb
+  - mysql
+  - postgres
+  - python
+  - python:3.9.0rc1-buster
+  - rmountjoy/dashmachine
+  - ubuntu:18.04
+  - chentex/random-logger:latest
