@@ -143,7 +143,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             ansible.playbook = "./provisioners/ansible/main-deploy.yml"
             ansible.verbose = ""
             ansible.compatibility_mode = "auto"
-            ansible.tags="ansible-role-vnc" # NOTE Replace virt with the preffered role you want to force coma sepperated.
+            # ansible.tags="ansible-role-vnc" # NOTE Replace virt with the preffered role you want to force coma sepperated.
             #http://www.inanzzz.com/index.php/post/wfj9/running-ansible-provisioning-by-passing-arguments-in-vagrant
             ansible.raw_arguments = Shellwords.shellsplit(ENV["ANSIBLE_ARGS"]) if ENV["ANSIBLE_ARGS"]
             ansible.raw_arguments = ["--connection=paramiko"]
@@ -183,7 +183,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
             vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
             vb.customize ["modifyvm", :id, "--draganddrop", "bidirectional"]
-            # vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
+            vb.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
             vb.customize ["modifyvm", :id, "--usb", "off"]
             vb.customize ["modifyvm", :id, "--usbehci", "off"]
             vb.customize ["modifyvm", :id, "--uartmode1", "file",File.join(Dir.pwd, "/#{VM_NAME}.log")]
