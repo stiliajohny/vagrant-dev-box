@@ -1,0 +1,22 @@
+---
+
+# This section is mandatory
+# It contains list of VMs and their parameters
+settings:
+  VAGRANTFILE_API_VERSION : "2"
+  VM_GUI: false
+  VM_NAME : "Archlinux-Vagrant"
+  VM_BOX_URL : "archlinux/archlinux"
+  VM_NAME_DOMAIN : ".local"
+  VM_CHECK_UPDATE : true
+  VM_CHECK_UPDATE : true
+  VM_DEFAULT_MEMORY : 8192
+  VM_DEFAULT_CPU : 8
+  VM_DISK_SIZE : '50GB'
+  VM_ICON: "https://avatars.githubusercontent.com/u/17669235"
+  CPU_DIVIDER : 4 #provision CPU as a portion of the Host Resources
+  MEM_DIVIDER : 4 #provision MEM as a portion of the Host Resources
+  VM_IP : "192.168.56.151"
+  REPOS_PATH : "~/Documents/GitHub/"
+  ANSIBLE_CHOISE: "ansible" #Options are ansible and ansible_local( ansible_local will run from within the VM )
+  VM_POST_UP_MESSAGE : "Welcome"

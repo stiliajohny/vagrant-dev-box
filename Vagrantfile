@@ -6,27 +6,37 @@ require 'net/http'
 require 'uri'
 require "open-uri"
 
-ENV["LC_ALL"] = "en_US.UTF-8"
+ENV["LC_ALL"] = "en_GB.UTF-8"
+# Allow to define the config file via env variable
+config_file = ENV['VAGRANT_CONFIG_YAML'] || 'vagrant.yaml'
+
+# Read the config file
+if File.file?(config_file)
+    $cfg = JSON.parse(JSON.dump(YAML.load_file(config_file)), symbolize_names: true)
+else
+    abort("ERROR: Can not read the Vagrant YAML configuration from %s." % config_file)
+end
+
+settings = $cfg[:settings]
 
 # GLOBAL VARIABLES TO BE USED
 # Change if you only know what you are doing :)
-VAGRANTFILE_API_VERSION = "2"
-VM_GUI=false
-VM_NAME = "Archlinux-Vagrant"
-VM_BOX_URL = "archlinux/archlinux"
-VM_NAME_DOMAIN = ".local"
-VM_CHECK_UPDATE = true
-VM_CHECK_UPDATE = true
-VM_DEFAULT_MEMORY = 8192
-VM_DEFAULT_CPU = 8
-VM_DISK_SIZE = '50GB'
-VM_ICON="https://avatars.githubusercontent.com/u/17669235"
-CPU_DIVIDER = 4 #provision CPU as a portion of the Host Resources
-MEM_DIVIDER = 4 #provision MEM as a portion of the Host Resources
-VM_IP = "192.168.56.151"
-VM_POST_UP_MESSAGE = "Welcome"
-REPOS_PATH = "~/Documents/GitHub/"
-ANSIBLE_CHOISE="ansible" #Options are ansible and ansible_locaauto_correctl( ansible_local will run from within the VM )
+VAGRANTFILE_API_VERSION = settings[:VAGRANTFILE_API_VERSION]
+VM_GUI = settings[:VM_GUI]
+VM_NAME = settings[:VM_NAME]
+VM_BOX_URL = settings[:VM_BOX_URL]
+VM_NAME_DOMAIN = settings[:VM_NAME_DOMAIN]
+VM_CHECK_UPDATE = settings[:VM_CHECK_UPDATE]
+VM_DEFAULT_MEMORY = settings[:VM_DEFAULT_MEMORY]
+VM_DEFAULT_CPU = settings[:VM_DEFAULT_CPU]
+VM_DISK_SIZE = settings[:VM_DISK_SIZE]
+VM_ICON = settings[:VM_ICON]
+CPU_DIVIDER = settings[:CPU_DIVIDER]
+MEM_DIVIDER = settings[:MEM_DIVIDER]
+VM_IP = settings[:VM_IP]
+VM_POST_UP_MESSAGE = settings[:VM_POST_UP_MESSAGE]
+REPOS_PATH = settings[:REPOS_PATH]
+ANSIBLE_CHOISE = settings[:ANSIBLE_CHOISE]
 
 MOUNT_PATHS={
     "sync_folder" =>{:local => "./sync_folder", :remote =>  "/home/vagrant/sync_folder" },
@@ -92,7 +102,7 @@ if  Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/#{VM_NAME}/*").empty? 
 elsif ARGV[0] == 'destroy'
     print "Have you saved all your work? \n"
 elsif ARGV[0] == 'reload'
-    printf "Reloading..."
+    printf "Reloading...\n"
 end
 
 
@@ -133,7 +143,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             ansible.playbook = "./provisioners/ansible/main-deploy.yml"
             ansible.verbose = ""
             ansible.compatibility_mode = "auto"
-            # ansible.tags="ansible-role-docker" # NOTE Replace virt with the preffered role you want to force coma sepperated.
+            ansible.tags="ansible-role-vnc" # NOTE Replace virt with the preffered role you want to force coma sepperated.
             #http://www.inanzzz.com/index.php/post/wfj9/running-ansible-provisioning-by-passing-arguments-in-vagrant
             ansible.raw_arguments = Shellwords.shellsplit(ENV["ANSIBLE_ARGS"]) if ENV["ANSIBLE_ARGS"]
             ansible.raw_arguments = ["--connection=paramiko"]
