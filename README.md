@@ -10,8 +10,8 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/stiliajohny/Vagrant-Dev-Box">
-    <img src="https://github.com/stiliajohny/Vagrant-Dev-Box/raw/main/.assets/logo.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/stiliajohny/dev-box">
+    <img src="https://github.com/stiliajohny/dev-box/raw/main/.assets/logo.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Vagrant Dev Box</h3>
@@ -21,9 +21,9 @@
     <br />
     <a href="./README.md"><strong>Explore the docs »</strong></a>
     <br />
-    <a href="https://github.com/stiliajohny/Vagrant-Dev-Box/issues/new?labels=i%3A+bug&template=1-bug-report.md">Report Bug</a>
+    <a href="https://github.com/stiliajohny/dev-box/issues/new?labels=i%3A+bug&template=1-bug-report.md">Report Bug</a>
     ·
-    <a href="https://github.com/stiliajohny/Vagrant-Dev-Box/issues/new?labels=i%3A+enhancement&template=2-feature-request.md">Request Feature</a>
+    <a href="https://github.com/stiliajohny/dev-box/issues/new?labels=i%3A+enhancement&template=2-feature-request.md">Request Feature</a>
   </p>
 </p>
 
@@ -51,10 +51,10 @@
 ## About The Project
 
 <p align="center">
-  <a href="https://github.com/stiliajohny/Vagrant-Dev-Box">
-    <img src="https://github.com/stiliajohny/vagrant-dev-box/raw/main/.assets/screenshot0.png" alt="Logo" width="50%" height="50%">
-    <img src="https://github.com/stiliajohny/vagrant-dev-box/raw/main/.assets/screenshot1.png" alt="Logo" width="50%" height="50%">
-    <img src="https://github.com/stiliajohny/vagrant-dev-box/raw/main/.assets/screenshot2.png" alt="Logo" width="50%" height="50%">
+  <a href="https://github.com/stiliajohny/dev-box">
+    <img src="https://github.com/stiliajohny/dev-box/raw/main/.assets/screenshot0.png" alt="Logo" width="50%" height="50%">
+    <img src="https://github.com/stiliajohny/dev-box/raw/main/.assets/screenshot1.png" alt="Logo" width="50%" height="50%">
+    <img src="https://github.com/stiliajohny/dev-box/raw/main/.assets/screenshot2.png" alt="Logo" width="50%" height="50%">
   </a>
 </p>
 
@@ -120,7 +120,7 @@ Use it carefully.
 
 ## Roadmap
 
-See the [open issues](https://github.com/stiliajohny/Vagrant-Dev-Box/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/stiliajohny/dev-box/issues) for a list of proposed features (and known issues).
 
 ---
 
@@ -168,16 +168,16 @@ Project Link: [https://github.com/your_username/repo_name](https://github.com/yo
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/stiliajohny/Vagrant-Dev-Box.svg?style=for-the-badge
-[contributors-url]: https://github.com/stiliajohny/Vagrant-Dev-Box/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/stiliajohny/Vagrant-Dev-Box.svg?style=for-the-badge
-[forks-url]: https://github.com/stiliajohny/Vagrant-Dev-Box/network/members
-[stars-shield]: https://img.shields.io/github/stars/stiliajohny/Vagrant-Dev-Box.svg?style=for-the-badge
-[stars-url]: https://github.com/stiliajohny/Vagrant-Dev-Box/stargazers
-[issues-shield]: https://img.shields.io/github/issues/stiliajohny/Vagrant-Dev-Box.svg?style=for-the-badge
-[issues-url]: https://github.com/stiliajohny/Vagrant-Dev-Box/issues
-[license-shield]: https://img.shields.io/github/license/stiliajohny/Vagrant-Dev-Box?style=for-the-badge
-[license-url]: https://github.com/stiliajohny/Vagrant-Dev-Box/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/stiliajohny/dev-box.svg?style=for-the-badge
+[contributors-url]: https://github.com/stiliajohny/dev-box/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/stiliajohny/dev-box.svg?style=for-the-badge
+[forks-url]: https://github.com/stiliajohny/dev-box/network/members
+[stars-shield]: https://img.shields.io/github/stars/stiliajohny/dev-box.svg?style=for-the-badge
+[stars-url]: https://github.com/stiliajohny/dev-box/stargazers
+[issues-shield]: https://img.shields.io/github/issues/stiliajohny/dev-box.svg?style=for-the-badge
+[issues-url]: https://github.com/stiliajohny/dev-box/issues
+[license-shield]: https://img.shields.io/github/license/stiliajohny/dev-box?style=for-the-badge
+[license-url]: https://github.com/stiliajohny/dev-box/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/johnstilia/
 [product-screenshot]: .assets/screenshot.png
