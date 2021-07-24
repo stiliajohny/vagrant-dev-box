@@ -2,6 +2,9 @@
 # Overwrite any of the roles variables here
 # Mostly can be found under the role's default folder in the main.yml ( or any yml in there )
 
+user: vagrant
+
+
 # For the role server_banners_prompts
 # Systemd Services to be shown on the MOTD for their status
 services:
@@ -66,7 +69,6 @@ apps:
   - vagrant
   - virtualbox
   - firefox
-  - code
   - openvpn
   - fakeroot
   - nmap
@@ -121,7 +123,6 @@ docker_images:
   - chentex/random-logger:latest
 
 # For the role YAY
-user: vagrant
 yay_role_apps: 
   - visual-studio-code-bin
   - zenmap
