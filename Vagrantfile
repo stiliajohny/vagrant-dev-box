@@ -47,7 +47,7 @@ PORTS_FW={
     "vncserver0"=> {:guest => "5900", :host => "5900", :protocol => "tcp", :auto_correct => "true"},
     "vncserver1"=> {:guest => "5901", :host => "5901", :protocol => "tcp", :auto_correct => "true"},
     "novnc0-xorg"=> {:guest => "6080", :host => "6080", :protocol => "tcp", :auto_correct => "true"},
-    "novnc1vncserver"=> {:guest => "6081", :host => "6081", :protocol => "tcp", :auto_correct => "true"}
+    "novnc1-vncserver"=> {:guest => "6081", :host => "6081", :protocol => "tcp", :auto_correct => "true"}
 }
 
 # Calculate CPU and MEM based on a divider
@@ -84,21 +84,34 @@ if  Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/#{VM_NAME}/*").empty? 
     print "Provisioned CPU: #{CPU_TO_PROVISON}\n"
     print "Provisioned MEMORY: #{MEM_TO_PROVISION}\n"
     print "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* \n"
-
-    print "Enter the ABSOLUTE/RELATIVE path to the folder you keep your git projects: ( defaults to ~/ on host ) \n"
-    print "e.g: /home/user/Documents/git_code/ \n"
-    REPOS_PATH = STDIN.gets.chomp
-    print "\n"
     if REPOS_PATH.nil? || REPOS_PATH.empty?
+        print "Enter the ABSOLUTE/RELATIVE path to the folder you keep your git projects: ( defaults to ~/ on host ) \n"
+        print "e.g: /home/user/Documents/git_code/ \n"
+        REPOS_PATH = STDIN.gets.chomp
+        print "\n"
         REPOS_PATH="~/Documents/GitHub/"
         print "==> You need to give a path to mount your Git repos! \n"
         print "==> For now the default will be used... \n\n"
+    else
+        print "The '#{REPOS_PATH}' will be mounted as '/home/vagrant/git/' \n"
+        spinner = Enumerator.new do |e|
+            loop do
+              e.yield '|'
+              e.yield '/'
+              e.yield '-'
+              e.yield '\\'
+            end
+          end
+          
+          1.upto(100) do |i|
+            progress = "=" * (i/10) unless i < 5
+            printf("\rLoading: [%-10s] %d%% %s", progress, i, spinner.next)
+            sleep(0.03)
+          end
+        print "\n"
     end
     print "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* \n\n"
-    print "The '#{REPOS_PATH}' will be mounted as '/home/vagrant/git/' \n"
-    print "Press any key to continue..."
-    enter = STDIN.gets.chomp
-    print "\n"
+
 elsif ARGV[0] == 'destroy'
     print "Have you saved all your work? \n"
 elsif ARGV[0] == 'reload'
@@ -143,7 +156,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             ansible.playbook = "./provisioners/ansible/main-deploy.yml"
             ansible.verbose = ""
             ansible.compatibility_mode = "auto"
-            # ansible.tags="ansible-role-vnc" # NOTE Replace virt with the preffered role you want to force coma sepperated.
+            # ansible.tags="ansible-role-prometheus-node-exporter" # NOTE Replace virt with the preffered role you want to force coma sepperated.
             #http://www.inanzzz.com/index.php/post/wfj9/running-ansible-provisioning-by-passing-arguments-in-vagrant
             ansible.raw_arguments = Shellwords.shellsplit(ENV["ANSIBLE_ARGS"]) if ENV["ANSIBLE_ARGS"]
             ansible.raw_arguments = ["--connection=paramiko"]

@@ -1,20 +1,20 @@
 ---
 - hosts: all
   gather_facts: True
-  vars_files: "./deploy-vars.yml"
-
+  # vars_files: "./deploy-vars.yml"
   roles:
     - { role: ansible-role-patching, tags: ["ansible-role-patching"] } # mostly leave enabled as it does a cache update
     - { role: ansible-role-xorg, tags: ["ansible-role-xorg"] }
     - { role: ansible-role-i3, tags: ["ansible-role-i3"] }
     - { role: ansible-role-apps, tags: ["ansible-role-apps"] }
-    - { role: ansible-role-docker, tags: ["ansible-role-docker"] }
     - { role: ansible-role-python, tags: ["ansible-role-python"] }
+    - { role: ansible-role-docker, tags: ["ansible-role-docker"] }
     - { role: ansible-role-asdf, tags: ["ansible-role-asdf"] }
     - { role: ansible-role-zsh, tags: ["ansible-role-zsh"] }
     - { role: ansible-role-server-banners-prompts, tags: ["ansible-role-server-banners-prompts"] }
     - { role: ansible-role-code-server, tags: ["ansible-role-code-server"] }
     - { role: ansible-role-vnc, tags: ["ansible-role-vnc"] }
+    - { role: ansible-role-yay, tags: ["ansible-role-yay"] }
 
   tasks:
     - name: Reboot VM

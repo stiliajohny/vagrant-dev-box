@@ -24,7 +24,6 @@ users:
 extra_zshrc_config:  |
     source $HOME/.asdf/asdf.sh
 
-
 # For the role awscli
 asdf_version: v0.6.2
 asdf_user: vagrant
@@ -41,7 +40,7 @@ asdf_plugins:
 
 # For the role Python
 # Specify names, versions and state
-pip_package: python-pip
+pip_package: python-pip 
 
 pip_install_packages:
   - name: setuptools_rust
@@ -120,3 +119,9 @@ docker_images:
   - rmountjoy/dashmachine
   - ubuntu:18.04
   - chentex/random-logger:latest
+
+# For the role YAY
+user: vagrant
+yay_role_apps: 
+  - visual-studio-code-bin
+  - zenmap

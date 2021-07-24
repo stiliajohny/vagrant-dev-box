@@ -1,9 +1,7 @@
 ---
 - hosts: all
   gather_facts: True
-  vars_files:
-    - ./deploy-vars.yml
-
+  # vars_files: ./deploy-vars.yml
   tasks:
     - set_fact: localhost_user="{{ lookup('env','USER') | default('ERROR', True) }}"
 
