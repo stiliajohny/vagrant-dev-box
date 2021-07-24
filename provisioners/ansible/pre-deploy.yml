@@ -11,6 +11,16 @@
         state: latest
       become: true
 
+    - name: Git Clone yay role
+      git:
+        repo: https://github.com/stiliajohny/ansible-role-yay.git 
+        dest: "./roles/ansible-role-yay"
+      delegate_to: 127.0.0.1
+      become: true
+      become_user: "{{ localhost_user }}"
+      ignore_errors: true
+
+
     - name: Git Clone xorg role
       git:
         repo: https://github.com/stiliajohny/ansible-role-xorg.git
