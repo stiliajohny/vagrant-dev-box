@@ -1,4 +1,9 @@
 sync_folder/**
 **/*.log
 .vagrant
-**/vm_icon.png
+**/vm_icon.pngprovisioners/ansible/roles/ansible-role-i3/
+provisioners/ansible/roles/ansible-role-docker/
+provisioners/ansible/roles/ansible-role-vnc/
+provisioners/ansible/roles/ansible-role-i3/
+provisioners/ansible/roles/ansible-role-xorg/
+provisioners/ansible/roles/ansible-role-yay/
