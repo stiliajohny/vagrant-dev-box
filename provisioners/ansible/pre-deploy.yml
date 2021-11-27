@@ -1,7 +1,6 @@
 ---
 - hosts: all
   gather_facts: True
-  # vars_files: ./deploy-vars.yml
   tasks:
     - set_fact: localhost_user="{{ lookup('env','USER') | default('ERROR', True) }}"
 
@@ -13,7 +12,7 @@
 
     - name: Git Clone yay role
       git:
-        repo: https://github.com/stiliajohny/ansible-role-yay.git 
+        repo: https://github.com/stiliajohny/ansible-role-yay.git
         dest: "./roles/ansible-role-yay"
       delegate_to: 127.0.0.1
       become: true
