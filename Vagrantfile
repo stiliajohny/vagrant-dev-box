@@ -102,20 +102,38 @@ if  Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/#{VM_NAME}/*").empty? 
               e.yield '\\'
             end
           end
-          
+
           1.upto(100) do |i|
             progress = "=" * (i/10) unless i < 5
             printf("\rLoading: [%-10s] %d%% %s", progress, i, spinner.next)
             sleep(0.03)
           end
         print "\n"
+        if ARGV[1]
+            VM_NAME = ARGV[1]
+        end
+        print "The new box will be called: " + VM_NAME + "\n"
     end
     print "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* \n\n"
 
 elsif ARGV[0] == 'destroy'
     print "Have you saved all your work? \n"
+    if ARGV[1] =='-f'
+        if ARGV[2]
+            VM_NAME = ARGV[2]
+        end
+    else
+        if ARGV[1]
+            VM_NAME = ARGV[1]
+        end
+    end
+    print "The box to destroy will be : " + VM_NAME
 elsif ARGV[0] == 'reload'
     printf "Reloading...\n"
+    if ARGV[1]
+        VM_NAME = ARGV[1]
+    end
+    print "The box to reload will be : " + VM_NAME
 end
 
 
@@ -129,6 +147,9 @@ end
 def gui_enabled?
     !ENV.fetch('GUI', '').empty?
 end
+
+username = STDIN.gets.chomp
+
 
 # Main Vagrant file
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -148,18 +169,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.define "#{VM_NAME}" do |box|
         box.vm.provision "#{ANSIBLE_CHOISE}" do |ansible|
             ansible.playbook = "./provisioners/ansible/pre-deploy.yml"
-            ansible.verbose = ""
+            ansible.verbose = "v"
             ansible.compatibility_mode = "auto"
-            ansible.raw_arguments = ["--connection=paramiko"]
+            # ansible.raw_arguments = ["--connection=paramiko"]
         end
         box.vm.provision "#{ANSIBLE_CHOISE}" do |ansible|
             ansible.playbook = "./provisioners/ansible/main-deploy.yml"
-            ansible.verbose = ""
+            # ansible.verbose = "v"
             ansible.compatibility_mode = "auto"
             # ansible.tags="ansible-role-prometheus-node-exporter" # NOTE Replace virt with the preffered role you want to force coma sepperated.
             #http://www.inanzzz.com/index.php/post/wfj9/running-ansible-provisioning-by-passing-arguments-in-vagrant
             ansible.raw_arguments = Shellwords.shellsplit(ENV["ANSIBLE_ARGS"]) if ENV["ANSIBLE_ARGS"]
-            ansible.raw_arguments = ["--connection=paramiko"]
+            # ansible.raw_arguments = ["--connection=paramiko"]
         end
         box.vm.provision "#{ANSIBLE_CHOISE}" do |ansible|
             ansible.playbook = "./provisioners/ansible/post-deploy.yml"
