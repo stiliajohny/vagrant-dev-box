@@ -43,7 +43,7 @@ asdf_plugins:
 
 # For the role Python
 # Specify names, versions and state
-pip_package: python-pip 
+pip_package: python-pip
 
 pip_install_packages:
   - name: setuptools_rust
@@ -66,8 +66,6 @@ apps:
   - nano
   - tmux
   - jq
-  - vagrant
-  - virtualbox
   - firefox
   - openvpn
   - fakeroot
@@ -123,6 +121,6 @@ docker_images:
   - chentex/random-logger:latest
 
 # For the role YAY
-yay_role_apps: 
+yay_role_apps:
   - visual-studio-code-bin
   - zenmap
