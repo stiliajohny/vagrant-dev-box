@@ -96,14 +96,17 @@ Use it carefully.
 - Git Clone the repo
 - cd in the cloned repo
 - Run
-   -  `vagrant up` to start and provision the instance
-   -  `vagrant provision` to re-provision the instance
-   -  `vagrant pause` to pause the instance
-   -  `vagrant resume` to resume a previously paused instance
-   -  `vagrant destroy` to completely destroy the instance
-   -  `vagrant ssh` to ssh in the instance
+   -  `vagrant up VM_NAME` to start and provision the instance
+   -  `vagrant provision VM_NAME` to re-provision the instance
+   -  `vagrant pause VM_NAME` to pause the instance
+   -  `vagrant resume VM_NAME` to resume a previously paused instance
+   -  `vagrant destroy VM_NAME` to completely destroy the instance
+   -  `vagrant ssh VM_NAME` to ssh in the instance
    -  `vagrant global-status` to get all the running instances ID
    -  `vagrant ssh 123abc` to ssh in the specific instance via the ID gathered earlier
+> If no VM_NAME is given the default VM_NAME is `Archlinux-Vagrant`
+
+> Multiple VMs can be created if different VM_NAMES are given.
 
 ### Web accesible apps
 - VNC on browser ( Xorg Display ) - http://localhost:6081/vnc.html
