@@ -13,7 +13,8 @@ settings:
   VM_DEFAULT_MEMORY : 8192
   VM_DEFAULT_CPU : 8
   VM_DISK_SIZE : '50GB'
-  VM_ICON: "https://avatars.githubusercontent.com/u/17669235"
+  # VM_ICON: "https://avatars.githubusercontent.com/u/17669235"
+  VM_ICON: "https://picsum.photos/32?random=10"
   CPU_DIVIDER : 4 #provision CPU as a portion of the Host Resources
   MEM_DIVIDER : 4 #provision MEM as a portion of the Host Resources
   VM_IP : "192.168.56.151"
