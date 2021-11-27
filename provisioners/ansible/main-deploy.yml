@@ -1,7 +1,6 @@
 ---
 - hosts: all
   gather_facts: True
-  # vars_files: "./deploy-vars.yml"
   roles:
     - { role: ansible-role-patching, tags: ["ansible-role-patching"] } # mostly leave enabled as it does a cache update
     - { role: ansible-role-xorg, tags: ["ansible-role-xorg"] }
@@ -16,7 +15,7 @@
     - { role: ansible-role-vnc, tags: ["ansible-role-vnc"] }
     - { role: ansible-role-yay, tags: ["ansible-role-yay"] }
 
-  tasks:
-    - name: Reboot VM
-      reboot:
-        reboot_timeout: 3600
+  # tasks:
+  #   - name: Reboot VM
+  #     reboot:
+  #       reboot_timeout: 3600
