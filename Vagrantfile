@@ -6,6 +6,36 @@ require 'net/http'
 require 'uri'
 require "open-uri"
 
+# Create colors
+# puts "I'm back green".bg_green
+# puts "I'm red and back cyan".red.bg_cyan
+# puts "I'm bold and green and backround red".bold.green.bg_red
+class String
+    def black;          "\e[30m#{self}\e[0m" end
+    def red;            "\e[31m#{self}\e[0m" end
+    def green;          "\e[32m#{self}\e[0m" end
+    def brown;          "\e[33m#{self}\e[0m" end
+    def blue;           "\e[34m#{self}\e[0m" end
+    def magenta;        "\e[35m#{self}\e[0m" end
+    def cyan;           "\e[36m#{self}\e[0m" end
+    def gray;           "\e[37m#{self}\e[0m" end
+
+    def bg_black;       "\e[40m#{self}\e[0m" end
+    def bg_red;         "\e[41m#{self}\e[0m" end
+    def bg_green;       "\e[42m#{self}\e[0m" end
+    def bg_brown;       "\e[43m#{self}\e[0m" end
+    def bg_blue;        "\e[44m#{self}\e[0m" end
+    def bg_magenta;     "\e[45m#{self}\e[0m" end
+    def bg_cyan;        "\e[46m#{self}\e[0m" end
+    def bg_gray;        "\e[47m#{self}\e[0m" end
+
+    def bold;           "\e[1m#{self}\e[22m" end
+    def italic;         "\e[3m#{self}\e[23m" end
+    def underline;      "\e[4m#{self}\e[24m" end
+    def blink;          "\e[5m#{self}\e[25m" end
+    def reverse_color;  "\e[7m#{self}\e[27m" end
+end
+
 ENV["LC_ALL"] = "en_GB.UTF-8"
 # Allow to define the config file via env variable
 config_file = ENV['VAGRANT_CONFIG_YAML'] || 'vagrant.yaml'
@@ -16,7 +46,7 @@ if File.file?(config_file)
 else
     abort("ERROR: Can not read the Vagrant YAML configuration from %s." % config_file)
 end
-
+# Declare the settings dict
 settings = $cfg[:settings]
 
 # GLOBAL VARIABLES TO BE USED
@@ -34,7 +64,7 @@ VM_ICON = settings[:VM_ICON]
 CPU_DIVIDER = settings[:CPU_DIVIDER]
 MEM_DIVIDER = settings[:MEM_DIVIDER]
 VM_IP = settings[:VM_IP]
-VM_POST_UP_MESSAGE = settings[:VM_POST_UP_MESSAGE]
+VM_POST_UP_MESSAGE = settings[:VM_POST_UP_MESSAGE] + "\n\n"
 REPOS_PATH = settings[:REPOS_PATH]
 ANSIBLE_CHOISE = settings[:ANSIBLE_CHOISE]
 
@@ -55,11 +85,12 @@ host = RbConfig::CONFIG['host_os']
 
 if host =~ /darwin/
     # sysctl returns Bytes and we need to convert to MB
-    mem = `sysctl -n hw.memsize`.to_i / 1024/1024
+    mem = `sysctl -n hw.memsize`.to_i / 1024 /1024
     cpu_count=`sysctl -n hw.ncpu`
 elsif host =~ /linux/
     # meminfo shows KB and we need to convert to MB
-    mem = `grep 'MemTotal' /proc/meminfo | sed -e 's/MemTotal://' -e 's/ kB//'`.to_i / 1024
+    # mem = `grep 'MemTotal' /proc/meminfo | sed -e 's/MemTotal://' -e 's/ kB//'`.to_i / 1024 # This would give you a static value based on the full memory and the devider you set
+    mem = `free | awk 'FNR == 2 {print $4}'  | xargs printf "%.*f\n" "$p"`.to_i / 1024 # this would give you a dynamic value based on the available memory on the system and the divider you set
     cpu_count = `awk "/^processor/ {++n} END {print n}" /proc/cpuinfo 2> /dev/null || sh -c 'sysctl hw.logicalcpu 2> /dev/null || echo ": 2"' | awk \'{print \$2}\' `.chomp
 elsif host =~ /mswin|mingw|cygwin/
     # meminfo shows KB and we need to convert to MB
@@ -72,19 +103,19 @@ else
     CPU_TO_PROVISON = VM_DEFAULT_CPUS
     MEM_TO_PROVISION = VM_DEFAULT_MEMORY
 end
-
 # Calculate a portion of the Host's resources
 CPU_TO_PROVISON=cpu_count.to_i.div(CPU_DIVIDER)
 MEM_TO_PROVISION=mem.to_i.div(MEM_DIVIDER)
 
 
 # Check vagrant input and ask user for input to populate some variables
-if  Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/#{VM_NAME}/*").empty? || ARGV[0] == 'up'
+# if  Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/#{VM_NAME}/*").empty? || ARGV[0] == 'up'
+if  ARGV[0] == 'up'
     print "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* \n"
     print "Provisioned CPU: #{CPU_TO_PROVISON}\n"
     print "Provisioned MEMORY: #{MEM_TO_PROVISION}\n"
     print "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* \n"
-    if REPOS_PATH.nil? || REPOS_PATH.empty?
+    if REPOS_PATH.nil? || REPOS_PATH.empty? # Check if REPOS_PATH is defined
         print "Enter the ABSOLUTE/RELATIVE path to the folder you keep your git projects: ( defaults to ~/ on host ) \n"
         print "e.g: /home/user/Documents/git_code/ \n"
         REPOS_PATH = STDIN.gets.chomp
@@ -94,48 +125,43 @@ if  Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/#{VM_NAME}/*").empty? 
         print "==> For now the default will be used... \n\n"
     else
         print "The '#{REPOS_PATH}' will be mounted as '/home/vagrant/git/' \n"
-        spinner = Enumerator.new do |e|
-            loop do
-              e.yield '|'
-              e.yield '/'
-              e.yield '-'
-              e.yield '\\'
-            end
-          end
-
-          1.upto(100) do |i|
-            progress = "=" * (i/10) unless i < 5
-            printf("\rLoading: [%-10s] %d%% %s", progress, i, spinner.next)
-            sleep(0.03)
-          end
-        print "\n"
-        if ARGV[1]
-            VM_NAME = ARGV[1]
-        end
-        print "The new box will be called: " + VM_NAME + "\n"
     end
+    if ARGV[1]
+        VM_NAME = ARGV[1]
+    end
+    print "The new box will be called: " + VM_NAME + "\n"
     print "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* \n\n"
-
 elsif ARGV[0] == 'destroy'
     print "Have you saved all your work? \n"
     if ARGV[1] =='-f'
         if ARGV[2]
             VM_NAME = ARGV[2]
         end
+    elsif !ARGV[1] == '-f'
+        VM_NAME = ARGV[2]
     else
         if ARGV[1]
             VM_NAME = ARGV[1]
         end
     end
-    print "The box to destroy will be : " + VM_NAME
+    print "The box to destroy will be : " + VM_NAME + "\n"
 elsif ARGV[0] == 'reload'
     printf "Reloading...\n"
     if ARGV[1]
         VM_NAME = ARGV[1]
     end
     print "The box to reload will be : " + VM_NAME
+elsif ARGV[0] == 'ssh'
+    if ARGV[1]
+        VM_NAME = ARGV[1]
+    end
+    print "SSH access to: " + VM_NAME + "\n"
+elsif ARGV[0] == 'provision'
+    if ARGV[1]
+        VM_NAME = ARGV[1]
+    end
+    print "Provisioning VM: " + VM_NAME + "\n"
 end
-
 
 open("#{VM_ICON}") do |image|
     File.open("#{File.dirname(__FILE__)}/vm_icon.png", "wb") do |file|
@@ -143,13 +169,9 @@ open("#{VM_ICON}") do |image|
     end
 end
 
-
 def gui_enabled?
     !ENV.fetch('GUI', '').empty?
 end
-
-username = STDIN.gets.chomp
-
 
 # Main Vagrant file
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -161,6 +183,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         "vagrant-disksize",
     ]
     # if encounted issues with installing plugins do VAGRANT_DISABLE_STRICT_DEPENDENCY_ENFORCEMENT=1 before a vagrant command
+    print "If encounted issues with installing plugins do VAGRANT_DISABLE_STRICT_DEPENDENCY_ENFORCEMENT=1 before a vagrant command\n".brown
     config.vagrant.plugins = required_plugins
 
     config.ssh.forward_agent = true
@@ -182,12 +205,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             ansible.raw_arguments = Shellwords.shellsplit(ENV["ANSIBLE_ARGS"]) if ENV["ANSIBLE_ARGS"]
             # ansible.raw_arguments = ["--connection=paramiko"]
         end
-        box.vm.provision "#{ANSIBLE_CHOISE}" do |ansible|
-            ansible.playbook = "./provisioners/ansible/post-deploy.yml"
-            ansible.verbose = ""
-            ansible.compatibility_mode = "auto"
-            ansible.raw_arguments = ["--connection=paramiko"]
-        end
+        # box.vm.provision "#{ANSIBLE_CHOISE}" do |ansible|
+        #     ansible.playbook = "./provisioners/ansible/post-deploy.yml"
+        #     ansible.verbose = ""
+        #     ansible.compatibility_mode = "auto"
+        #     ansible.raw_arguments = ["--connection=paramiko"]
+        # end
         box.vm.box_check_update = VM_CHECK_UPDATE
         box.vm.box = "#{VM_BOX_URL}"
         box.disksize.size = "#{VM_DISK_SIZE}"
