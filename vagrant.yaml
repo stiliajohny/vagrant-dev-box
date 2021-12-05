@@ -9,7 +9,6 @@ settings:
   VM_BOX_URL : "archlinux/archlinux"
   VM_NAME_DOMAIN : ".local"
   VM_CHECK_UPDATE : true
-  VM_CHECK_UPDATE : true
   VM_DEFAULT_MEMORY : 8192
   VM_DEFAULT_CPU : 8
   VM_DISK_SIZE : '50GB'
